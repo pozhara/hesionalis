@@ -62,7 +62,7 @@ TATTOO_CATEGORY = [
 class Artist(models.Model):
     name = models.CharField(max_length=100)
     profile_image = CloudinaryField('image', default='placeholder')
-    bio = models.CharField(max_length=250, null=True, blank=True)
+    skills = models.CharField(max_length=30, choices=TATTOO_CATEGORY, null=True, blank=True)
     gender = models.CharField(max_length=1, choices=GENDER)
 
     def __str__(self):
