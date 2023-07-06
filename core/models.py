@@ -5,9 +5,10 @@ from cloudinary.models import CloudinaryField
 # Create your models here.
 
 GENDER = [
-    ('M', "Male"),
-    ("F", "Female"),
-    ("O", "Other")
+    ('Male', "Male"),
+    ("Female", "Female"),
+    ("Nonbinary", "Nonbinary"),
+    ("Other", "Other")
 ]
 
 TATTOO_SIZE = [
@@ -61,9 +62,9 @@ TATTOO_CATEGORY = [
 
 class Artist(models.Model):
     name = models.CharField(max_length=100)
-    profile_image = CloudinaryField('image', default='placeholder')
+    image_url = models.CharField(max_length=200, null=True)
     skills = models.CharField(max_length=30, choices=TATTOO_CATEGORY, null=True, blank=True)
-    gender = models.CharField(max_length=1, choices=GENDER)
+    gender = models.CharField(max_length=10, choices=GENDER)
 
     def __str__(self):
         return f"{self.name}"
@@ -89,8 +90,9 @@ class Appointment(models.Model):
 
 
 class Design(models.Model):
-    image = CloudinaryField('image', default='placeholder')
+    image = models.CharField(max_length=200, null=True)
     category = models.CharField(max_length=100, choices=TATTOO_CATEGORY)
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE, null=True, blank=True, related_name="design_artist")
 
     def __str__(self):
         return f"{self.category}"

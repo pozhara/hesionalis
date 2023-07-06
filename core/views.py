@@ -51,34 +51,10 @@ faqs = [
 ]
 
 
-reviews = [
-    {
-        "user": "David Radyson",
-        "review": "Wonderful friendly staff! Super clean studio, welcoming atmosphere! Thank you so much for my awesome tattoos! Also given free beverages while I was going through ideas."
-    },
-    {
-        "user": "Marcus Andreson",
-        "review": "What a great place to go! I've been to a lot of places but I have never been anywhere that compares to this upbeat and modern studio. Thank you for the tattoo!"
-    },
-    {
-        "user": "Matt Smith",
-        "review": "I used various studios in the city and they didn't make the cut... so I went to try Neolagnium. These guys know exactly what they are doing. Top quality studio! Top atmosphere!"
-    },
-    {
-        "user": "Sarah Thompson",
-        "review": "I had an amazing experience at Neolagnium! The artists were extremely talented and took the time to understand what I wanted. The studio has a great vibe and I felt comfortable throughout the entire process. Highly recommend!"
-    },
-    {
-        "user": "Emily Johnson",
-        "review": "Neolagnium is the best tattoo studio in town! The artists are not only skilled but also very friendly and accommodating. The studio itself is clean and well-maintained. I couldn't be happier with the tattoo I got from them. Definitely my go-to place from now on!"
-    }
-]
-
-
 class HomeView(View):
     def get(self, request):
         artists = Artist.objects.all()
-        return render(request, 'index.html', context={"artists": artists, "reviews": reviews})
+        return render(request, 'index.html', context={"artists": artists})
 
 
 class FAQView(View):
