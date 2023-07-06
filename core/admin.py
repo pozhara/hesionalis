@@ -12,7 +12,11 @@ class ArtistAdmin(admin.ModelAdmin):
     list_filter = ('name', 'skills', 'gender')
 
 
-admin.site.register(Design)
+@admin.register(Design)
+class DesignAdmin(admin.ModelAdmin):
+    list_display = ('category', 'artist')
+    search_fields = ('category', 'artist')
+    list_filter = ('category', 'artist')
 
 
 @admin.register(Appointment)

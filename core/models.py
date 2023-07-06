@@ -44,7 +44,6 @@ APPOINTMENT_STATUS = [
 ]
 
 TATTOO_CATEGORY = [
-    ("Traditional", "Traditional"),
     ("Neo Traditional", "Neo Traditional"),
     ("Fine Line", "Fine Line"),
     ("Tribal", "Tribal"),
