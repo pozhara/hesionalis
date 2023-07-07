@@ -61,15 +61,15 @@ class FAQView(View):
 
     def get(self, request):
 
-        return render(request, 'faq.html', context={'faqs': faqs})
+        return render(request, 'faq.html', context={"faqs": faqs})
 
 
 class ArtistView(ListView):
     model = Artist
     template_name = 'artists.html'
     context_object_name = 'artists'
-    
-    
+
+
 class DesignsView(View):
     def get(self, request):
         designs = Design.objects.all()

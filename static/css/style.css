@@ -22,12 +22,24 @@ body {
   font-size:40px;
 }
 
+.font-size-2{
+  font-size:25px;
+}
+
+.font-size-3{
+  font-size:20px;
+}
+
 .bg-btn-color{
   background-color:#7765D2;
 }
 
 .bg-color{
   background-color:#ffdfb490;
+}
+
+.bg-color-2{
+  background-color:#f8d6a7;
 }
 
 .color{
@@ -47,11 +59,4 @@ body {
 
 .fa-solid{
   font-size:30px;
-}
-
-/* #services{
-  height:100vh;
-  background-image: url("https://res.cloudinary.com/dehoeoirf/image/upload/v1688569200/tattoo-machine_k9hurq.svg");
-  background-size:auto;
-  background-repeat: no-repeat;
 }

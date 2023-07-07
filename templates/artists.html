@@ -4,25 +4,11 @@
 
 <div class="container">
     <div class="text-uppercase color px-5 py-5">
-        <h1>Hesionalis'</h1>
-        <h1>tattoo</h1>
-        <h1>artists</h1>
+        <h1 class="font">Hesionalis'</h1>
+        <h1 class="font">tattoo</h1>
+        <h1 class="font">artists</h1>
     </div>
 </div>
-
-<!--<div class="container-fluid">
-    <div class="row">
-        {% for artist in artists %}
-        <div class="col-lg-6 col-md-6 col-sm-12 px-3 py-3 text-white text-center border border-white">
-            <img src="{{ artist.image_url }}" alt="{{ artist.name }} photo" class="img-fluid">
-            <h3 class="color">{{ artist.name }}</h3>
-            <h4>Skilled in: {{ artist.skills }}</h4>
-            <h4>Gender: {{ artist.gender }}</h4>
-            <a class="btn bg-btn-color text-uppercase text-white mb-3" href="#">Book Now</a>
-        </div>
-        {% endfor %}
-    </div>
-</div> -->
 
 <div class="container">
     <div class="row">
@@ -31,10 +17,10 @@
         <div class="card border-0 shadow">
           <img src="{{ artist.image_url }}" class="card-img-top" alt="{{ artist.name }} photo">
           <div class="card-body text-center bg-color">
-            <h5 class="card-title mb-0">{{ artist.name }}</h5>
-            <div class="card-text">Skilled in: {{ artist.skills }}</div>
-            <div class="card-text pb-1">Gender: {{ artist.gender }}</div>
-            <a class="btn bg-btn-color text-uppercase text-white" href="#">Book Now</a>
+            <h5 class="card-title mb-0 font">{{ artist.name }}</h5>
+            <div class="card-text font-2">Skilled in: {{ artist.skills }}</div>
+            <div class="card-text pb-1 font-2">Gender: {{ artist.gender }}</div>
+            <a class="btn bg-btn-color text-uppercase text-white font-2" href="#">Book Now</a>
           </div>
         </div>
       </div>
