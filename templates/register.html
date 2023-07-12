@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %} Register {% endblock title %}
+{%block content %}
+<div>
+    <h1 class="text-uppercase my-5 color text-center font-2">Create Account</h1>
+    <form method="post" class="text-center color pt-3 font-2 font-size-2">
+        {% csrf_token %}
+        <div>
+            <div class="mb-2">
+                <label for="first_name">First Name</label>
+                {{form.first_name}}
+            </div>
+            <div class="mb-2">
+                <label for="last_name">Last Name</label>
+                {{form.last_name}}
+            </div>
+        </div>
+        <div class="mb-2">
+            <label for="username">Username</label>
+            {{ form.username }}
+            <span class="text-danger">{{form.username.errors}}</span>
+        </div>
+        <div>
+            <div class="mb-2">
+                <label for="age">Age </label>
+                {{form.age}}
+            </div>
+            <div class="mb-2">
+                <label for="last_name">Gender</label>
+                {{form.gender}}</div>
+            </div>
+        </div>
+
+        <div class="color text-center font-2 font-size-2 mb-2">
+            <label for="email">Email</label>
+            {{form.email}}
+            <span class="text-danger">{{form.email.errors}}</span>
+        </div>
+        <div class="color text-center font-2 font-size-2 mb-2">
+            <label for="password">Password</label>
+            {{ form.password }}
+        </div>
+        <div class="text-center font-2 font-size-2">
+            <button type="submit" class="btn bg-btn-color btn-lg text-uppercase text-white">
+                <span>
+                    Sign Up
+                </span>
+            </button></div>
+        <br /><br />
+    </form>
+</div>
+{% endblock content %}

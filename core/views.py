@@ -1,9 +1,15 @@
-from django.shortcuts import render
+from django.conf import settings
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse_lazy
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, logout
+from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.views import View
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView, TemplateView
 
 from core.models import Artist, Design
+from core.forms import RegistrationForm, LoginForm
 
 # Create your views here.
 
@@ -75,3 +81,58 @@ class DesignsView(View):
         designs = Design.objects.all()
         size = ['large', "medium", "small"]
         return render(request, 'styles.html', context={'size': size, "designs": designs})
+
+
+class RegistrationView(View):
+    def get(self, request):
+        form = RegistrationForm()
+        return render(request, 'register.html', {'form': form})
+
+    def post(self, request):
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+
+            user = form.save()
+            user.password = make_password(user.password)
+
+            user.save()
+            login(request, user)
+            messages.success(request, message='Registration Successfull ')
+
+            return redirect('home')
+        return render(request, 'register.html', {'form': form})
+
+
+class LoginView(TemplateView):
+
+    template_name = "login.html"
+
+    def get(self, request):
+        form = LoginForm()
+        return render(request, 'login.html', {'form': form})
+
+    def post(self, request):
+        form = LoginForm(request.POST)
+
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+
+            user = Auth.authenticate(request, email=email, password=password)
+
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    messages.success(request, message='Login successfull')
+                    return redirect('home')
+
+            else:
+                messages.error(request, message='Invalid email or password')
+
+        return render(request, "login.html", {'form': form})
+
+
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('home')
