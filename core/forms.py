@@ -65,8 +65,7 @@ class LoginForm(forms.Form):
                                                            'placeholder': 'email@email.com',
                                                            'autocomplete': 'off',
                                                            }))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': '********',
-                                                                 'autocomplete': 'off',
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'autocomplete': 'off',
                                                                  'class': 'form-input'
                                                                  }))
 

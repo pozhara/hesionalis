@@ -2,7 +2,7 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.views import View
@@ -10,6 +10,7 @@ from django.views.generic import ListView, CreateView, TemplateView
 
 from core.models import Artist, Design
 from core.forms import RegistrationForm, LoginForm
+from core.backend import EmailAuthenticationBackend as Auth
 
 # Create your views here.
 
@@ -97,7 +98,6 @@ class RegistrationView(View):
 
             user.save()
             login(request, user)
-            messages.success(request, message='Registration Successfull ')
 
             return redirect('home')
         return render(request, 'register.html', {'form': form})
@@ -123,11 +123,7 @@ class LoginView(TemplateView):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    messages.success(request, message='Login successfull')
                     return redirect('home')
-
-            else:
-                messages.error(request, message='Invalid email or password')
 
         return render(request, "login.html", {'form': form})
 

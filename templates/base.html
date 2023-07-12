@@ -46,7 +46,7 @@
                     </li>
                     {%else%}
                     <li class="nav-item">
-                        <a href="#" class="nav-link">Login</a>
+                        <a href="{% url 'login' %}" class="nav-link">Login</a>
                     </li>
                     {%endif %}
                 </ul>
@@ -96,16 +96,16 @@
 
                         <ul class="list-unstyled mb-0">
                             <li>
-                                <a href="#!" class="text-white">Artists</a>
+                                <a href="{% url 'artists' %}" class="text-white">Artists</a>
                             </li>
                             <li>
-                                <a href="#!" class="text-white">Styles</a>
+                                <a href="{% url 'styles' %}" class="text-white">Styles</a>
                             </li>
                             <li>
                                 <a href="#!" class="text-white">Bookings</a>
                             </li>
                             <li>
-                                <a href="#!" class="text-white">FAQ</a>
+                                <a href="{% url 'faq' %}" class="text-white">FAQ</a>
                             </li>
                         </ul>
                     </div>

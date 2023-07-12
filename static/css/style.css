@@ -54,6 +54,10 @@ body {
   color:#090909cb;
 }
 
+.color-3{
+  color:#7765D2;
+}
+
 #tattoo-heart{
   height:100vh;
   background-image: url("https://res.cloudinary.com/dehoeoirf/image/upload/v1688570958/Untitled_cf3mcl.jpg");
@@ -63,4 +67,12 @@ body {
 
 .fa-solid{
   font-size:30px;
+}
+
+#register-link a:link, #register-link a:active, #register-link a:visited{
+  text-decoration: none;
+}
+
+#register-link a:hover{
+  color:white;
 }
