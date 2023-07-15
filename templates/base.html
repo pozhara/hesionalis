@@ -14,7 +14,7 @@
 <body class="d-flex flex-column h-100 main-bg">
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a href="#" class="navbar-brand font">hesionalis</a>
+            <a href="{% url 'home' %}" class="navbar-brand font">hesionalis</a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
                 <span class="navbar-toggler-icon"></span>
@@ -29,17 +29,17 @@
                         <a href="{% url 'styles' %}" class="nav-link">Styles</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">Booking</a>
+                        <a href="{% url 'create_appointment' %}" class="nav-link">Booking</a>
                     </li>
                     <li class="nav-item">
                         <a href="{% url 'faq' %}" class="nav-link">FAQ</a>
                     </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a href="#" class="nav-link">Appointments</a>
+                        <a href="{% url 'appointment' %}" class="nav-link">Appointments</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">Settings</a>
+                        <a href="{% url 'edit_profile' %}" class="nav-link">Profile</a>
                     </li>
                     <li class="nav-item">
                         <a href="{% url 'logout' %}" class="nav-link">Logout</a>
@@ -57,7 +57,18 @@
 
     <main class="flex-shrink-0 main-bg">
         {% block content %}
-        <!-- Content Goes here -->
+        {% if form.errors %}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <div id="form_errors">
+                {% for key, value in form.errors.items %}
+                <strong>{{ value }}</strong>
+                {% endfor %}
+            </div>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
         {% endblock content %}
     </main>
 

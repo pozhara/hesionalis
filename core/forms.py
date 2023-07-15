@@ -1,73 +1,94 @@
 from django import forms
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+from datetime import date, datetime
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.forms import PasswordChangeForm as DefaultPasswordChangeForm
-from core.models import GENDER
+from django.contrib.auth import get_user_model
+from .models import Appointment, TATTOO_LOCATION, APPOINTMENT_STATUS, TATTOO_CATEGORY, TATTOO_SIZE, Artist
 
-User = get_user_model()
+
+class RegisterForm(UserCreationForm):
+    # fields we want to include and customize in our form
+    first_name = forms.CharField(max_length=100,
+                                 required=True,
+                                 widget=forms.TextInput(attrs={'placeholder': 'First Name',
+                                                               'class': 'form-control',
+                                                               }))
+    last_name = forms.CharField(max_length=100,
+                                required=True,
+                                widget=forms.TextInput(attrs={'placeholder': 'Last Name',
+                                                              'class': 'form-control',
+                                                              }))
+    username = forms.CharField(max_length=100,
+                               required=True,
+                               widget=forms.TextInput(attrs={'placeholder': 'Username',
+                                                             'class': 'form-control',
+                                                             }))
+    email = forms.EmailField(required=True,
+                             widget=forms.TextInput(attrs={'placeholder': 'Email',
+                                                           'class': 'form-control',
+                                                           }))
+    password1 = forms.CharField(max_length=50,
+                                required=True,
+                                widget=forms.PasswordInput(attrs={'placeholder': 'Password',
+                                                                  'class': 'form-control',
+                                                                  'data-toggle': 'password',
+                                                                  'id': 'password',
+                                                                  }))
+    password2 = forms.CharField(max_length=50,
+                                required=True,
+                                widget=forms.PasswordInput(attrs={'placeholder': 'Confirm Password',
+                                                                  'class': 'form-control',
+                                                                  'data-toggle': 'password',
+                                                                  'id': 'password',
+                                                                  }))
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
 
 
-class RegistrationForm(forms.ModelForm):
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(max_length=100,
+                               required=True,
+                               widget=forms.TextInput(attrs={'placeholder': 'Username',
+                                                             'class': 'form-control',
+                                                             }))
+    password = forms.CharField(max_length=50,
+                               required=True,
+                               widget=forms.PasswordInput(attrs={'placeholder': 'Password',
+                                                                 'class': 'form-control',
+                                                                 'data-toggle': 'password',
+                                                                 'id': 'password',
+                                                                 'name': 'password',
+                                                                 }))
+    remember_me = forms.BooleanField(required=False)
 
-    username = forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={'class': 'form-input', 'autocomplete': 'off'}))
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'remember_me']
 
-    email = forms.CharField(widget=forms.EmailInput(attrs={'class': 'form-input',
-                                                           'placeholder': 'email@email.com',
-                                                           'autocomplete': 'off', }))
+
+class EditProfileForm(forms.ModelForm):
     first_name = forms.CharField(max_length=16,
                                  required=True,
                                  widget=forms.TextInput(attrs={
                                      'class': 'form-input',
-                                     'placeholder': 'John',
                                      'autocomplete': 'off',
                                  }
                                  ))
     last_name = forms.CharField(max_length=16,
-                                required=True,
+                                required=False,
                                 widget=forms.TextInput(attrs={'class': 'form-input',
-                                                              'placeholder': 'Smith',
                                                               'autocomplete': 'off', }))
-
-    password = forms.CharField(required=True, widget=forms.PasswordInput(attrs={'placeholder': '', 'autocomplete': 'off', 'class': 'form-input'}))
-
-    age = forms.IntegerField(required=True,
-                             min_value=18,
-                             max_value=100,
-                             widget=forms.NumberInput(attrs={'class': 'form-input',
-                                                             'placeholder': '18',
-                                                             'autocomplete': 'off',
-                                                             }))
-
-    gender = forms.ChoiceField(choices=GENDER,
+    username = forms.CharField(max_length=20,
                                required=False,
-                               widget=forms.Select(attrs={
-                                   'class': ' form-input'}))
+                               widget=forms.TextInput(attrs={'class': 'form-input',
+                                                             'autocomplete': 'off', }))
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'first_name', 'last_name', 'age', 'gender']
-
-    def clean_username(self):
-        username_input = self.cleaned_data.get('username')
-        if User.objects.filter(username=username_input).exists():
-            raise forms.ValidationError("Username already exists!")
-        return username_input
-
-    def clean_email(self):
-        email_input = self.cleaned_data.get('email')
-        if User.objects.filter(email=email_input).exists():
-            raise forms.ValidationError("Email already exists!")
-
-        return email_input
-
-
-class LoginForm(forms.Form):
-    email = forms.CharField(widget=forms.EmailInput(attrs={'class': 'form-input',
-                                                           'placeholder': 'email@email.com',
-                                                           'autocomplete': 'off',
-                                                           }))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'autocomplete': 'off',
-                                                                 'class': 'form-input'
-                                                                 }))
+        fields = ['first_name', 'last_name', 'username']
 
 
 class PasswordChangeForm(DefaultPasswordChangeForm):
@@ -81,7 +102,41 @@ class PasswordChangeForm(DefaultPasswordChangeForm):
             'autocomplete': 'off',
             'class': 'form-input'
         })
-        self.fields['new_password2'].widget = forms.TextInput(attrs={
-            'autocomplete': 'new-password',
-            'class': 'form-input',
+        self.fields['new_password2'].widget.attrs.update({
+            'autocomplete': 'off',
+            'class': 'form-input'
         })
+
+
+class DateTimeInputPicker(forms.DateTimeInput):
+    input_type = 'datetime-local'
+    format = '%Y-%m-%dT%H:%M'
+    attrs = {'step': '1'}
+
+
+class AppointmentForm(forms.ModelForm):
+    appointment_at = forms.DateTimeField(initial=datetime.now(), widget=forms.DateTimeInput(
+        attrs={
+            'class': 'form-input'
+        }))
+    tattoo_location = forms.ChoiceField(choices=TATTOO_LOCATION,
+                                        required=True,
+                                        widget=forms.Select(attrs={
+                                           'class': 'form-input'}))
+    tattoo_size = forms.ChoiceField(choices=TATTOO_SIZE,
+                                    required=True,
+                                    widget=forms.Select(attrs={
+                                       'class': 'form-input'}))
+    tattoo_category = forms.ChoiceField(choices=TATTOO_CATEGORY,
+                                        required=True,
+                                        widget=forms.Select(attrs={
+                                            'class': 'form-input'}))
+    artist = forms.ModelChoiceField(queryset=Artist.objects.all(),
+                                    required=True,
+                                    widget=forms.Select(attrs={
+                                        'class': 'form-input'}))
+
+    class Meta:
+        model = Appointment
+        fields = ['appointment_at', 'tattoo_location',
+                  'tattoo_size', 'tattoo_category', 'artist']

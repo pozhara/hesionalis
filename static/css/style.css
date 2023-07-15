@@ -38,12 +38,20 @@ body {
   background-color:#7765D2;
 }
 
+.bg-btn-color-2{
+  background-color: #FFCA80;
+}
+
 .bg-color{
   background-color:#ffdfb490;
 }
 
 .bg-color-2{
   background-color:#f8d6a7;
+}
+
+.bg-color-3{
+  background-color:#fadbaf;
 }
 
 .color{

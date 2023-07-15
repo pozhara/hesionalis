@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %} Request Appointment {%endblock title %}
+{%block content %}
+<div>
+    <h1>Request an Appointment</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="artist">Artist</label>
+            <div>{{form.artist}}</div>
+        </div>
+
+        <div>
+            <label for="tattoo_location">Tattoo Location</label>
+            <div>{{form.tattoo_location}}</div>
+        </div>
+
+        <div>
+            <label for="tattoo_size">Tattoo Size
+            </label>
+            <div>{{form.tattoo_size}}</div>
+        </div>
+        <div>
+            <label for="tattoo_category">Tattoo Category</label>
+
+            <div>{{form.tattoo_category}}</div>
+        </div>
+
+        <div>
+            <label for="tattoo_category">Expected Appointment
+                Time</label>
+            <div>
+
+                {{form.appointment_at}}
+
+            </div>
+        </div>
+</div>
+<div>
+    <button type="submit">
+        Submit
+    </button>
+</div>
+<br /><br />
+</form>
+</div>
+
+
+{% endblock content %}

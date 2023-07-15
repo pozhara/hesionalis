@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div>
+    <div class="text-center font-2">
+        <h1 class="color my-3">Profile</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="py-3 text-center">
+                <label for="first_name" class="color">First Name</label>
+
+                <div class="mt-2">{{profile.first_name}}</div>
+            </div>
+
+            <div class="text-center">
+                <label for="last_name" class="color">Last Name</label>
+                <div class="mt-2">{{profile.last_name}}</div>
+            </div>
+
+            <div class="py-3 text-center">
+                <label for="username" class="color">Username</label>
+                <div class="mt-2">{{profile.username}}</div>
+            </div>
+
+            <button type="submit" class="btn bg-btn-color btn-xl text-uppercase text-white my-2"><span>Save Changes</span></button>
+            <div><a href="{% url 'edit_password' %}" class="btn bg-btn-color-2 btn-xl text-uppercase mt-2">Change Password</a></div>
+
+
+        </form>
+    </div>
+</div>
+
+{% endblock %}

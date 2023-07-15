@@ -5,11 +5,15 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.views import View
 from django.views.generic import ListView, CreateView, TemplateView
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView
 
-from core.models import Artist, Design
-from core.forms import RegistrationForm, LoginForm
+from core.models import Artist, Design, Appointment
+from .forms import RegisterForm, LoginForm, EditProfileForm, PasswordChangeForm, AppointmentForm
 from core.backend import EmailAuthenticationBackend as Auth
 
 # Create your views here.
@@ -84,51 +88,157 @@ class DesignsView(View):
         return render(request, 'styles.html', context={'size': size, "designs": designs})
 
 
-class RegistrationView(View):
-    def get(self, request):
-        form = RegistrationForm()
-        return render(request, 'register.html', {'form': form})
+class RegisterView(View):
+    form_class = RegisterForm
+    initial = {'key': 'value'}
+    template_name = 'register.html'
 
-    def post(self, request):
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(initial=self.initial)
+        return render(request, self.template_name, {'form': form})
 
-            user = form.save()
-            user.password = make_password(user.password)
-
-            user.save()
-            login(request, user)
-
-            return redirect('home')
-        return render(request, 'register.html', {'form': form})
-
-
-class LoginView(TemplateView):
-
-    template_name = "login.html"
-
-    def get(self, request):
-        form = LoginForm()
-        return render(request, 'login.html', {'form': form})
-
-    def post(self, request):
-        form = LoginForm(request.POST)
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
 
         if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
+            form.save()
 
-            user = Auth.authenticate(request, email=email, password=password)
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Account created for {username}')
 
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    return redirect('home')
+            return redirect(to='login')
 
-        return render(request, "login.html", {'form': form})
+        return render(request, self.template_name, {'form': form})
+
+
+class CustomLoginView(LoginView):
+    form_class = LoginForm
+
+    def form_valid(self, form):
+        remember_me = form.cleaned_data.get('remember_me')
+
+        if not remember_me:
+            # set session expiry to 0 seconds. So it will automatically close the session after the browser is closed.
+            self.request.session.set_expiry(0)
+
+            # Set session as modified to force data updates/cookie to be saved.
+            self.request.session.modified = True
+
+        # else browser session will be as long as the session cookie time "SESSION_COOKIE_AGE" defined in settings.py
+        return super(CustomLoginView, self).form_valid(form)
 
 
 class LogoutView(View):
     def get(self, request):
         logout(request)
         return redirect('home')
+
+
+class EditProfileView(View):
+    def get(self, request):
+        user = request.user
+        if not user:
+            return redirect('login')
+        profile = EditProfileForm(initial={
+                                  'first_name': user.first_name, 'last_name': user.last_name, 'username': user.username})
+        context = {'profile': profile}
+        return render(request, 'edit_profile.html', context)
+
+    def post(self, request):
+        user = request.user
+        if not user:
+            # Retrieve the user from the database
+            return redirect('login')
+        form = EditProfileForm(request.POST or None, instance=user)
+
+        if form.is_valid():
+            # Update the user data and save the changes
+            user = request.user
+            if request.method == 'POST':
+                if form.is_valid():
+                    user.first_name = form.cleaned_data['first_name']
+
+                    user.last_name = form.cleaned_data['last_name']
+                    user.username = form.cleaned_data['username']
+                    form.save()
+                    return redirect('home')
+
+        context = {'form': form}
+        return render(request, 'edit_profile.html', context)
+
+
+class PasswordChangeView(View):
+    def get(self, request):
+        user = request.user
+        if not user:
+            return redirect('login')
+        change_password = PasswordChangeForm(user)
+        context = {"change_password": change_password}
+        return render(request, 'edit_password.html', context)
+
+    def post(self, request):
+        user = request.user
+        if not user:
+            # Retrieve the user from the database
+            return redirect('login')
+        change_password = PasswordChangeForm(request.user, request.POST)
+
+        if change_password.is_valid():
+
+            user = change_password.save()
+            print(user.password)
+            user.save()
+            update_session_auth_hash(request, user)
+            messages.success(
+                request, 'Your password has been successfully updated.')
+            change_password.cleaned_data['old_password'] = None
+            # Redirect to the same page after successful password change
+            return redirect('home')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+
+        context = {"change_password": change_password}
+        return render(request, 'edit_password.html', context)
+
+
+class CreateAppointmentView(LoginRequiredMixin, View):
+    
+    template_name = 'appointment_form.html'
+    login_url = '/login/?next=/appointment/create/'
+
+    def get(self, request, artist_id=None):
+        form = AppointmentForm()
+        if artist_id is not None:
+
+            form.fields['artist'].initial = artist_id
+
+        return render(request, 'appointment_form.html', {'form': form})
+
+    def post(self, request, artist_id=None):
+
+        form = AppointmentForm(request.POST)
+        if form.is_valid():
+
+            appointment = form.save(commit=False)
+            appointment.user = request.user
+            appointment.save()
+            messages.success(request, "Appointment was Requested Successfully")
+            return redirect('home')
+
+        return render(request, 'appointment_form.html', {'form': form})
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, 'Please log in to create an appointment.')
+        return super().dispatch(request, *args, **kwargs)
+
+
+class AppointmentView(LoginRequiredMixin, View):
+    template_name = 'appointment.html'
+    login_url = '/login/?next=/appointments/'
+    context_object_name = 'appointments'
+
+    def get(self, request):
+        appointments = Appointment.objects.filter(user__email=request.user.email)
+        return render(request, self.template_name, {'appointments': appointments})
+
