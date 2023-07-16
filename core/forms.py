@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.forms import PasswordChangeForm as DefaultPasswordChangeForm
 from django.contrib.auth import get_user_model
@@ -81,14 +81,10 @@ class EditProfileForm(forms.ModelForm):
                                 required=False,
                                 widget=forms.TextInput(attrs={'class': 'form-input',
                                                               'autocomplete': 'off', }))
-    username = forms.CharField(max_length=20,
-                               required=False,
-                               widget=forms.TextInput(attrs={'class': 'form-input',
-                                                             'autocomplete': 'off', }))
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'username']
+        fields = ['first_name', 'last_name']
 
 
 class PasswordChangeForm(DefaultPasswordChangeForm):
@@ -108,17 +104,7 @@ class PasswordChangeForm(DefaultPasswordChangeForm):
         })
 
 
-class DateTimeInputPicker(forms.DateTimeInput):
-    input_type = 'datetime-local'
-    format = '%Y-%m-%dT%H:%M'
-    attrs = {'step': '1'}
-
-
 class AppointmentForm(forms.ModelForm):
-    appointment_at = forms.DateTimeField(initial=datetime.now(), widget=forms.DateTimeInput(
-        attrs={
-            'class': 'form-input'
-        }))
     tattoo_location = forms.ChoiceField(choices=TATTOO_LOCATION,
                                         required=True,
                                         widget=forms.Select(attrs={
@@ -138,5 +124,5 @@ class AppointmentForm(forms.ModelForm):
 
     class Meta:
         model = Appointment
-        fields = ['appointment_at', 'tattoo_location',
+        fields = ['tattoo_location',
                   'tattoo_size', 'tattoo_category', 'artist']

@@ -7,14 +7,14 @@
         Appointments
     </h1>
 
+    {% for appointment in appointments %}
     <div class="container">
         <div class="row color font-2 text-center">
-            {% for appointment in appointments %}
             <div class="col-lg-4 col-sm-2 px-2 py-3">Artist: {{appointment.artist.name}}</div>
             <div class="col-lg-4 col-sm-2 px-2 py-3">Tattoo Location: {{appointment.tattoo_location}}</div>
             <div class="col-lg-4 col-sm-2 px-2 py-3">Tattoo Size: {{appointment.tattoo_size}}</div>
             <div class="col-lg-4 col-sm-2 px-2 py-3">Tattoo Category: {{appointment.tattoo_category}}</div>
-            <div class="col-lg-4 col-sm-2 px-2 py-3">Requested Appointment Time: {{appointment.appointment_at}}</div>
+            <div class="col-lg-4 col-sm-2 px-2 py-3"> Created on: {{ appointment.created_on }}</div>
             <div class="col-lg-4 col-sm-2 px-2 py-3">Status:
                 {% if appointment.status == 0 %}
                 Pending
@@ -24,27 +24,27 @@
                 Rejected
                 {%endif%}
             </div>
-            <div class="col-4 col-sm-2"></div>
         </div>
-    </div>
+        <form method="post" action="#" >
+            {% csrf_token %} 
+           
+            <input type="submit" value="Delete" class="cursor-pointer"/>
 
-    <div class="row font-2">
-        <div class="col-md-6 col-sm-2 text-center">
-            <div><a href="#" class="btn bg-btn-color-2 btn-xl text-uppercase mt-2">Edit</a></div>
-        </div>
-        <div class="col-md-6 col-sm-2 text-center">
-            <div><a href="#" class="btn bg-btn-color btn-xl text-uppercase text-white my-2"><span>Delete</span></a></div>
-        </div>
+        </form>
     </div>
+    <hr/>
+
 
         {%endfor%}
     {%else%}
-    <div>
-        <h1 class="color text-center text-uppercase font-2 py-4">
+    <div class="my-4 py-4 text-center text-uppercase font-2">
+        <h1 class="color">
             No Appointments Found
         </h1>
-        <div class="font-2 text-center py-3">
-            <button><a href="{% url 'create_appointment' %}" class="btn bg-btn-color btn-xl text-uppercase text-white my-2">Request An Appointment</a></button>
+    </div>
+    <div>
+        <div class="font-2 text-center my-2">
+            <a href="{% url 'create_appointment' %}" class="btn bg-btn-color btn-xl text-uppercase text-white my-2">Request An Appointment</a>
         </div>
     </div>
 </div>

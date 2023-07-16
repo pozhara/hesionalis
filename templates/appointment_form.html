@@ -2,47 +2,47 @@
 {% block title %} Request Appointment {%endblock title %}
 {%block content %}
 <div>
-    <h1>Request an Appointment</h1>
-    <form method="post">
-        {% csrf_token %}
-        <div>
-            <label for="artist">Artist</label>
-            <div>{{form.artist}}</div>
-        </div>
+    <div class="container font-2 pt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-5">
+                <div class="card shadow-lg border-0 rounded-lg mt-0 mb-3 bg-color-2">
+                    <div class="card-header justify-content-center">
+                        <h3 class="font-weight-light my-4 text-center">Request an Appointment</h3>
+                    </div>
+                    <div class="card-body bg-color">
+                        <form method="post" class="text-center">
+                            {% csrf_token %}
+                            <div class="mb-2">
+                                <label for="artist">Artist:</label>
+                                <div>{{form.artist}}</div>
+                            </div>
 
-        <div>
-            <label for="tattoo_location">Tattoo Location</label>
-            <div>{{form.tattoo_location}}</div>
-        </div>
+                            <div class="mb-2">
+                                <label for="tattoo_location">Tattoo Location:</label>
+                                <div>{{form.tattoo_location}}</div>
+                            </div>
 
-        <div>
-            <label for="tattoo_size">Tattoo Size
-            </label>
-            <div>{{form.tattoo_size}}</div>
-        </div>
-        <div>
-            <label for="tattoo_category">Tattoo Category</label>
+                            <div class="mb-2">
+                                <label for="tattoo_size">Tattoo Size:
+                                </label>
+                                <div>{{form.tattoo_size}}</div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="tattoo_category">Tattoo Category:</label>
 
-            <div>{{form.tattoo_category}}</div>
-        </div>
-
-        <div>
-            <label for="tattoo_category">Expected Appointment
-                Time</label>
-            <div>
-
-                {{form.appointment_at}}
-
+                                <div>{{form.tattoo_category}}</div>
+                            </div>
+                            <div>
+                                <button type="submit" class="btn bg-btn-color btn-xl text-uppercase text-white">
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
-</div>
-<div>
-    <button type="submit">
-        Submit
-    </button>
-</div>
-<br /><br />
-</form>
+    </div>
 </div>
 
 

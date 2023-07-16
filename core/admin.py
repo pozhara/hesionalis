@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Artist, Design, Appointment, Profile
+from .models import Artist, Design, Appointment
 from django_summernote.admin import SummernoteModelAdmin
 
 # Register your models here.
@@ -21,7 +21,7 @@ class DesignAdmin(admin.ModelAdmin):
 
 @admin.register(Appointment)
 class AppointmentAdmin(SummernoteModelAdmin):
-    list_display = ('user', 'appointment_at', 'tattoo_category', 'artist', 'status')
+    list_display = ('user', 'tattoo_category', 'artist', 'status')
     list_filter = ('status', 'artist', 'created_on')
     search_fields = ('user', 'artist', 'tattoo_category')
     summernote_fields = ('comment')
@@ -32,6 +32,3 @@ class AppointmentAdmin(SummernoteModelAdmin):
 
     def reject_appointment(self, request, queryset):
         queryset.update(status=2)
-
-
-admin.site.register(Profile)

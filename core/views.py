@@ -1,20 +1,19 @@
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.views import View
-from django.views.generic import ListView, CreateView, TemplateView
+from django.views.generic import ListView, CreateView, TemplateView, DeleteView
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 
 from core.models import Artist, Design, Appointment
 from .forms import RegisterForm, LoginForm, EditProfileForm, PasswordChangeForm, AppointmentForm
-from core.backend import EmailAuthenticationBackend as Auth
 
 # Create your views here.
 
@@ -140,7 +139,8 @@ class EditProfileView(View):
         if not user:
             return redirect('login')
         profile = EditProfileForm(initial={
-                                  'first_name': user.first_name, 'last_name': user.last_name, 'username': user.username})
+                                  'first_name': user.first_name, 'last_name': user.last_name})
+        username = request.user.username
         context = {'profile': profile}
         return render(request, 'edit_profile.html', context)
 
@@ -157,9 +157,7 @@ class EditProfileView(View):
             if request.method == 'POST':
                 if form.is_valid():
                     user.first_name = form.cleaned_data['first_name']
-
                     user.last_name = form.cleaned_data['last_name']
-                    user.username = form.cleaned_data['username']
                     form.save()
                     return redirect('home')
 
@@ -223,7 +221,7 @@ class CreateAppointmentView(LoginRequiredMixin, View):
             appointment.user = request.user
             appointment.save()
             messages.success(request, "Appointment was Requested Successfully")
-            return redirect('home')
+            return redirect('appointment')
 
         return render(request, 'appointment_form.html', {'form': form})
 
@@ -241,4 +239,3 @@ class AppointmentView(LoginRequiredMixin, View):
     def get(self, request):
         appointments = Appointment.objects.filter(user__email=request.user.email)
         return render(request, self.template_name, {'appointments': appointments})
-
