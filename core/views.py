@@ -130,6 +130,7 @@ class CustomLoginView(LoginView):
 class LogoutView(View):
     def get(self, request):
         logout(request)
+        messages.success(request, "You have successfully logged out")
         return redirect('home')
 
 
@@ -159,8 +160,11 @@ class EditProfileView(View):
                     user.first_name = form.cleaned_data['first_name']
                     user.last_name = form.cleaned_data['last_name']
                     form.save()
+                    messages.success(request, "Your profile has been successfully updated!")
                     return redirect('home')
-
+        else:
+            messages.error(request, "Please provide valid information")
+            return redirect('edit_profile')
         context = {'form': form}
         return render(request, 'edit_profile.html', context)
 
@@ -193,7 +197,7 @@ class PasswordChangeView(View):
             # Redirect to the same page after successful password change
             return redirect('home')
         else:
-            messages.error(request, 'Please correct the errors below.')
+            messages.error(request, 'Please provide your old password and confirm the new one')
 
         context = {"change_password": change_password}
         return render(request, 'edit_password.html', context)
@@ -220,7 +224,7 @@ class CreateAppointmentView(LoginRequiredMixin, View):
             appointment = form.save(commit=False)
             appointment.user = request.user
             appointment.save()
-            messages.success(request, "Appointment was Requested Successfully")
+            messages.success(request, "Appointment was requested successfully!")
             return redirect('appointment')
 
         return render(request, 'appointment_form.html', {'form': form})
